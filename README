@@ -1,0 +1,362 @@
+REFLECTIVE
+
+Sorting out the bother of Java reflection exceptions.
+
+PURPOSE
+
+The exceptions thrown from Java reflection calls are all direct subclasses of
+Exception, except for when they are direct subclasses RuntimeException. This
+creates an ugly try catch block that is very difficult to test. This library
+is a light wrapper around the Java reflection classes that catches any
+reflection based exceptions and wraps them so that the try catch block for a
+reflective invocation or a method or constructor can be implemented with a
+single catch block.
+
+MOTIVATION
+
+Correctly reporting reflection exceptions is made difficult by the fact that you
+must handle each exception, even when you take no special actions based the type
+of reflection exception thrown.
+
+This is not an attempt to bury the exceptions raised by reflection, the
+exception raised is still a checked exception. It makes it much easier to test,
+however, and to be confident that your application handles relfection exceptions
+correctly.
+
+Let's use an example where we bootstrap an instance of a repository of
+resources, giving it a repository URL. Different implementations of repository
+fetch resources using different protocols. This is a pluggable component of our
+application. When the program starts, it reads a configuration file and all the
+repositories are loaded and made ready to serve resources.
+
+Rather than create a factory interface, we simply ask that a Repository
+implementation have a constructor that takes a single URL.
+
+Here is a method that does this.
+
+public class RepositoryLoader {
+    public Class<?> getRepositoryConstructor(Class<?> respoitoryClass, URL url)
+        Constructor<Repository> constructor;
+        try {
+            Constructor<?> newString = repositoryClass.getConstructor(URL.class);
+        } catch (SecurityException e) {
+            throw new ApplicationException("Cannot find repository constructor.", e);
+        }  catch (NoSuchMethodException e) {
+            throw new ApplicationException("Cannot find repository constructor.", e);
+        }
+    }
+
+    public Repository createRepository(Constructor<?> constructor, URL url)
+        Repostiory respoitory;
+        try {
+            return constructor.newInstance(url); 
+        } catch (IllegalArgumentException e) {
+            throw new ApplicationException("Unable to create repository.", e);
+        } catch (InstantiationException e) {
+            throw new ApplicationException("Unable to create repository.", e);
+        } catch (IllegalAccessException e) {
+            throw new ApplicationException("Unable to create repository.", e);
+        } catch (InvocationTargetException e) {
+            throw new ApplicationException("Unable to create repository.", e);
+        }
+    }
+}
+
+If you're a test-driven developer like myself, the code above is disheartening.
+It is going to be difficult to test. I need to implement a number of different
+mock repositories, faulty in different ways, that will trigger the different
+exceptions.
+
+Also, you'll note that I'm not taking special actions based on each exception
+type. For all of the getConstructor exceptions, I'm going to report the same
+application specific problem, a constructor cannot be had. The caller can
+inspect the wrapped reflective exception to sort our exactly why, so it does us
+no good to repeat the cause in the wrapper exception.
+
+The newInstance call will report an exception as either a failure to invoke the
+constructor, the details of why available in the wrapped exception, so it makes
+no sense to repeat ourselves.
+
+Yet we repeat ourselves. How do we make this more DRY?
+
+Here is code that we see all too frequently, that is not quite correct.
+
+public class RepositoryLoader {
+    public Class<?> getRepositoryConstructor(Class<?> respoitoryClass, URL url)
+    throws ApplicationException {
+        try {
+            return repositoryClass.getConstructor(URL.class);
+        } catch (Exception e) {
+            throw new ApplicationException("Cannot find repository constructor.", e);
+        }
+    }
+
+    public Repository createRepository(Constructor<?> constructor, URL url) {
+    throws ApplicationException {
+        try {
+            return constructor.newInstance(url); 
+        } catch (Exception e) {
+            throw new ApplicationException("Unable to create repository.", e);
+        }
+    }
+}
+
+Looks good. We'll catch any exception and say, hey we couldn't find your
+repository, or create your repository.
+
+Problem is that we might trigger a RuntimeException like an OutOfMemory
+exception. RuntimeException is a subclass of Exception. We will swallow that
+RuntimeException and mis-report it.
+
+Yeah, we didn't find the right constructor, but not because the constructor is
+missing, rather, because you have a horrible memory leak somewhere's else in the
+code, and it just happened to get triggered during this reflection invocation. 
+
+We can fix this by catching RuntimeException in advance of Exception and
+throwing that exception.
+
+public class RepositoryLoader {
+    public Class<?> getRepositoryConstructor(Class<?> respoitoryClass, URL url)
+    throws ApplicationException {
+        try {
+            return repositoryClass.getConstructor(URL.class);
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ApplicationException("Cannot find repository constructor.", e);
+        }
+    }
+
+    public Repository createRepository(Constructor<?> constructor, URL url) {
+    throws ApplicationException {
+        try {
+            return constructor.newInstance(url); 
+        } catch (IllegalArgumentException e) {
+            throw new ApplicationException("Unable to create repository.", e);
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ApplicationException("Unable to create repository.", e);
+        }
+    }
+}
+
+Now we have to repeat ourselves again, since IllegalArgumentException is a
+subclass of RuntimeException. We need to catch it and handle it before the
+RuntimeException block or it will get handled in the RuntimeException block.
+
+The worst part for test-driven deisgner me is that RuntimeException block.
+Constructor is a final class, which means I have to create a perverted JVM to
+create a mock Constructor that will throw a RuntimeException. This to test a
+block that has no moving parts. I'm not about to do this.
+
+Thus, I've created this library, com.goodworkalan.reflectives.
+
+import com.goodworkalan.reflectives.Constructor;
+import com.goodworkalan.reflectives.ReflectiveFactory;
+
+public class RepositoryLoader {
+    private final ReflectiveFactory reflectiveFactory = new ReflectiveFactory();
+
+    public Constructor<?> getRepositoryConstructor(Class<?> respoitoryClass, URL url)
+    throws ApplicationException {
+        try {
+            return reflectiveFactory.getConstructor(repositoryClass, URL.class);
+        } catch (ReflectiveException e) {
+            throw new ApplicationException("Cannot find repository constructor.", e);
+        }
+    }
+
+    public Repository createRepository(Constructor<?> constructor, URL url) {
+    throws ApplicationException {
+        try {
+            return constructor.newInstance(url); 
+        } catch (ReflectiveException e) {
+            throw new ApplicationException("Unable to create repository.", e);
+        }
+    }
+}
+
+Now I can test my Repository bootstrapping by providing a single Repository
+instance that does not have a URL constructor and a single Repository instance
+that cannot be instanciated, let's say it is abstract. 
+
+What if you do want to deal with different reflection exceptions differently?
+
+The ReflectiveException has an error code, once for each of the possible
+exceptions thrown. Write a switch statement. Let's tighten up our example.
+
+public class RepositoryLoader {
+    private final ReflectiveFactory reflectiveFactory = new ReflectiveFactory();
+
+    public Constructor<?> getRepositoryConstructor(Class<?> respoitoryClass, URL url)
+    throws ApplicationException {
+        try {
+            return reflectiveFactory.getConstructor(repositoryClass, URL.class).newInstance(url);
+        } catch (ReflectiveException e) {
+            switch (e.getCode() / 100) {
+            case ReflectiveException.CANNOT_FIND:
+                throw new ApplicationException("Cannot find repository constructor.", e);
+            case ReflectiveException.CANNOT_EXECUTE:
+                throw new ApplicationException("Unable to create repository.", e);
+            }
+        }
+    }
+}
+
+I like error codes. They are so small and fast and easy to understand. They are
+easy to document too, you write your Javadoc right above their public static
+final declaration in their associated exception. 
+
+You can group them too. Here they are grouped in multiples of 100, 100s are for
+lookup errors, 200s for invocation errors.
+
+The above can be tested with two bad class implementations.
+
+Let's say we wanted a special message for when the constructor raises an
+exception, it would look like this.
+
+public class RepositoryLoader {
+    private final ReflectiveFactory reflectiveFactory = new ReflectiveFactory();
+
+    public Constructor<?> getRepositoryConstructor(Class<?> respoitoryClass, URL url)
+    throws ApplicationException {
+        try {
+            return reflectiveFactory.getConstructor(repositoryClass, URL.class).newInstance(url);
+        } catch (ReflectiveException e) {
+            switch (e.getCode() / 100) {
+            case ReflectiveException.CANNOT_FIND:
+                throw new ApplicationException("Cannot find repository constructor.", e);
+            case ReflectiveException.CANNOT_EXECUTE:
+                if (e.getCode() == ReflectiveException.INVOCATION_TARGET) {
+                    throw new ApplicationException("Repository configuraiton failure.", e);
+                }
+                throw new ApplicationException("Unable to create repository.", e);
+            }
+        }
+    }
+}
+
+Still easy to test with three separate bad Repository implementations.
+
+Why are you looking at me that way? Oh, I know.
+
+A switch statement? Horrors! Where are the objects? What you done with them?
+Quick, pick up the GoF and find a Design Pattern that will end this nightmare.
+
+But, I like error codes. I want to be able to test my calls to Java reflection,
+replacing a cut-and-paste catch ladder with something that I can test. 
+
+Couldn't this be done with an Excpetion hierarchy?
+
+I don't see what that buys us, to mirror the existing exceptions into a
+hierarchy, when we can model that hierarchy with less code, less footprint,
+using eight static final integers, instead of nine classes.
+
+If you can't bare to look at a switch statement, then maybe you want to rethrow.
+The following is analogous to the above.
+
+public class RepositoryLoader {
+    private final ReflectiveFactory reflectiveFactory = new ReflectiveFactory();
+
+    public Constructor<?> getRepositoryConstructor(Class<?> respoitoryClass, URL url)
+    throws ApplicationException {
+        Constructor<?> constructor;
+        try {
+            constructor = reflectiveFactory.getConstructor(repositoryClass, URL.class);
+        } catch (ReflectiveException e) {
+            throw new ApplicationException("Cannot find repository constructor.", e);
+        }
+        try {
+            return constructor.newInstance(url);
+        } catch (ReflectiveException e) {
+            try {
+                throw e.getCause();
+            } catch(InvocationTargetException e) {
+                throw new ApplicationException("Repository configuration failure.", e);
+            } catch(Exception e) {
+                throw new ApplicationException("Unable to create repository.", e);
+            }
+        }
+    }
+}
+
+In theory, there is still a chance that you might swallow a RuntimeException.
+
+You don't have to use the error codes if they bother you, but if you do use
+them, you might find that you like them. They are a good way to classify your
+exceptions, costing the appropriate amount of effort.
+
+Was it hubris on my part to name an object Constructor and another Method?  
+
+The idea is that you use the wrappers in place of the java.lang.reflect
+equivalents in your code. I've yet to run across an library or framework that
+allows java.lang.reflect objects to pass API boundaries. Seems like a safe bet
+to use shadow the names.
+
+The constructor and method objets in the reflectives library are partial
+decorator/adapters. They provide a decorator like adapter around the invocation
+methods, that changes the exception signature. They provide a getter method to
+obtain the java.lang.reflect object.
+
+Let's look at a Loader that takes com.goodworkalan.reflectives.Constructor and
+asserts that it has the right signature.
+
+public class RepositoryLoader {
+    private final ReflectiveFactory reflectiveFactory = new ReflectiveFactory();
+
+    public Repository newRepository(Constructor<?> constructor, URL url)
+    throws ApplicationException {
+        assert constructor.getNative().getParameterTypes().length == 1;
+        assert constructor.getNative().getParameterTypes()[0].equals(URI.class);
+        try {
+            return constructor.newInstance(url);
+        } catch (ReflectiveException e) {
+            if (e.getCode() == ReflectiveException.INVOCATION_TARGET) {
+                throw new ApplicationException("Repository configuraiton failure.", e);
+            }
+            throw new ApplicationException("Unable to create repository.", e);
+        }
+    }
+}
+
+It is because I do, in fact, use reflection sparingly, that I do not mind the
+verbosity of calling getNative().[4] The Method and Constructor wrappers implement
+equals and hashCode, so they can be used in collections.
+
+The upshot is that I can take the 100% test coverage of the reflective library
+and use it to know that I have 100% test coverage when I use reflection in my
+code. I won't have to create a mock SecurityManager to force a SecurityException
+for each use of reflection. I've done this once here, so now it is simple for me
+to trigger the correct exceptions to trace through all of the catch blocks in my
+reflection code.
+
+There are those that will argue that the poorly designed exception hierarchy is
+appropriate, it is the price one must pay in order to use the java.lang.reflect
+library. That java.lang.reflect should be difficult to use. That
+java.lang.reflect code should be difficult to test. That it should be easy to
+fail at correctly handling java.lang.reflect exceptions.
+
+You can safely ignore this sort of mentoring. You can safely ignore apologia for
+the salt that Java pours on meta-programming. Meta-programming is programming
+and a programmer is allowed to meta-program. The reflection API is an API, there
+for you to use. Any interface is with pluggable implementations uses reflection.
+Any form of object serialization or deserialization uses reflection. There are
+many valid uses of reflection. We shouldn't pretend that these cruddy catch
+ladders are helping anybody write better code.
+
+[1] Please note, I am not intersted in a lecture on how people abuse reflection,
+how reflection is a sign that the programmer doesn't know what he's doing, etc.
+I'm not interested, please, contain yourself. I'm not interested in that
+particular parhoical display of your assumed superiority. Go somewhere else and
+correct someone's use of prepositions or something. Oh, look, there's a Slashdot
+comment where someone used "random" when they really meant "arbitrary". Sick 'em!
+
+[2] Astute readers will suggest a design where the constructor is a private
+member of RepositoryLoader, so that we can be confident that we always have the
+correct constructor, since our class fetched it, kept it, and we're not
+accepting a constructor in from the wild. Good suggestion, but note that the
+above catch ladder is possible.
+
+[3] There are software fetishes bandied about that consider object trees with
+more than two levels a violation of a law. I share not this fetish.
