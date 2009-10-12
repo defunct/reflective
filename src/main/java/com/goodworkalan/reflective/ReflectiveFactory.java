@@ -25,7 +25,7 @@ public class ReflectiveFactory {
      *             If the method is not found or if the constructor is
      *             inaccessible do to a security policy.
      */
-    public <T> com.goodworkalan.reflective.Constructor<T> getConstructor(Class<T> type, Class<?>... initargs)
+    public <T> Constructor<T> getConstructor(Class<T> type, Class<?>... initargs)
     throws ReflectiveException {
         try {
             return new Constructor<T>(type.getConstructor(initargs));
