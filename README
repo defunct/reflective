@@ -11,6 +11,8 @@ Sorting out the bother of Java reflection exceptions.
 
     Contact: alan@blogometer.com
 
+    Dependencies: None.
+
 PURPOSE
 
 The exceptions thrown from Java reflection calls are all direct subclasses of
