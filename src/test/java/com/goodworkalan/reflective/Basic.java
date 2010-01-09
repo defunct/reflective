@@ -1,6 +1,11 @@
 package com.goodworkalan.reflective;
 
 public class Basic {
+    @SuppressWarnings("unused")
+    private String secret;
+
+    public String field;
+
     public Basic(int integer) {
     }
     

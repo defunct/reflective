@@ -63,4 +63,29 @@ public class ReflectiveFactory {
             throw new ReflectiveException(NO_SUCH_METHOD, e);
         }
     }
+
+    /**
+     * Create a new field wrapper for the field of the given class, with the
+     * given name.
+     * 
+     * @param <T>
+     *            The type of class..
+     * @param type
+     *            The class.
+     * @param name
+     *            The name of the field.
+     * @return A wrapper around a constructor.
+     * @throws ReflectiveException
+     *             If the method is not found or if the constructor is
+     *             inaccessible do to a security policy.
+     */
+    public <T> Field getField(Class<T> type, String name) throws ReflectiveException {
+        try {
+            return new Field(type.getField(name));
+        } catch (SecurityException e) {
+            throw new ReflectiveException(SECURITY, e);
+        } catch (NoSuchFieldException e) {
+            throw new ReflectiveException(NO_SUCH_METHOD, e);
+        }
+    }
 }

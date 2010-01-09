@@ -20,10 +20,10 @@ public class Constructor<T> {
 
     /**
      * Create a constructor wrapper around the given
-     * java.lang.reflect.Constructor.
+     * <code>java.lang.reflect.Constructor</code>.
      * 
      * @param costructor
-     *            The native method.
+     *            The native constructor.
      */
     public Constructor(java.lang.reflect.Constructor<T> constructor) {
         this.constructor = constructor;

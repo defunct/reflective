@@ -22,7 +22,7 @@ public class MethodTest {
         System.setSecurityManager(new SecurityManager() {
             @Override
             public void checkMemberAccess(Class<?> clazz, int which) {
-                if (clazz.equals(Security.class)) {
+                if (clazz.equals(Basic.class)) {
                     throw new SecurityException("No.");
                 }
             }
@@ -32,7 +32,7 @@ public class MethodTest {
             }
         });
         try {
-            new ReflectiveFactory().getMethod(Security.class, "foo");
+            new ReflectiveFactory().getMethod(Basic.class, "foo");
         } catch (ReflectiveException e) {
             System.setSecurityManager(sm);
             assertEquals(e.getCode(), ReflectiveException.SECURITY);

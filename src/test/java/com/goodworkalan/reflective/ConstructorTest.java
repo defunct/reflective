@@ -22,7 +22,7 @@ public class ConstructorTest {
         System.setSecurityManager(new SecurityManager() {
             @Override
             public void checkMemberAccess(Class<?> clazz, int which) {
-                if (clazz.equals(Security.class)) {
+                if (clazz.equals(Basic.class)) {
                     throw new SecurityException("No.");
                 }
             }
@@ -32,7 +32,7 @@ public class ConstructorTest {
             }
         });
         try {
-            new ReflectiveFactory().getConstructor(Security.class);
+            new ReflectiveFactory().getConstructor(Basic.class);
         } catch (ReflectiveException e) {
             System.setSecurityManager(sm);
             assertEquals(e.getCode(), ReflectiveException.SECURITY);
