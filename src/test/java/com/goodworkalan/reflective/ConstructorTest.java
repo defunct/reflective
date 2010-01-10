@@ -76,12 +76,13 @@ public class ConstructorTest {
     }
     
 
+    @SuppressWarnings("unchecked")
     @Test
     public void illegalAccess() {
-        for (java.lang.reflect.Constructor<Basic> constructor : Basic.class.getDeclaredConstructors()) {
+        for (java.lang.reflect.Constructor<?> constructor : Basic.class.getDeclaredConstructors()) {
             if (Modifier.isPrivate(constructor.getModifiers())) {
                 try {
-                    new Constructor<Basic>(constructor).newInstance('c');
+                    new Constructor<Basic>((java.lang.reflect.Constructor<Basic>) constructor).newInstance('c');
                 } catch (ReflectiveException e) {
                     assertEquals(e.getCode(), ReflectiveException.ILLEGAL_ACCESS);
                     return;
