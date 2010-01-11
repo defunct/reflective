@@ -2,10 +2,10 @@ REFLECTIVE
 
 Sorting out the bother of Java reflection exceptions.
 
-    Issues and Tasks: http://github.com/bigeasy/reflective/issues
-
     Source: http://github.com/bigeasy/reflective/tree/master
     Documentation: http://wiki.github.com/bigeasy/reflective
+
+    Issues: http://bigeasy.lighthouseapp.com/projects/44242-reflective
 
     License: The MIT License
 
