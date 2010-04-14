@@ -1,5 +1,7 @@
 package com.goodworkalan.reflective;
 
+import static com.goodworkalan.reflective.ReflectiveException.ILLEGAL_ACCESS;
+import static com.goodworkalan.reflective.ReflectiveException.INSTANCIATION;
 import static com.goodworkalan.reflective.ReflectiveException.NO_SUCH_METHOD;
 import static com.goodworkalan.reflective.ReflectiveException.SECURITY;
 
@@ -10,6 +12,17 @@ import static com.goodworkalan.reflective.ReflectiveException.SECURITY;
  * @author Alan Gutierrez
  */
 public class ReflectiveFactory {
+    // FIXME Document!
+    public <T> T newInstance(Class<T> type) throws ReflectiveException {
+        try {
+            return type.newInstance();
+        } catch (InstantiationException e) {
+            throw new ReflectiveException(INSTANCIATION, e);
+        } catch (IllegalAccessException e) {
+            throw new ReflectiveException(ILLEGAL_ACCESS, e);
+        }
+    }
+
     /**
      * Create a new constructor wrapper for the constructor of the given class
      * with the given initialization arguments.
