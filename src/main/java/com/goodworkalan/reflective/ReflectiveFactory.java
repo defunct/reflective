@@ -13,6 +13,7 @@ import static com.goodworkalan.reflective.ReflectiveException.SECURITY;
  */
 public class ReflectiveFactory {
     // FIXME Document!
+    // FIXME Catch SecurityException.
     public <T> T newInstance(Class<T> type) throws ReflectiveException {
         try {
             return type.newInstance();
