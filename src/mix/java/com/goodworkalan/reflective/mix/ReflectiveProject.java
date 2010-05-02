@@ -10,10 +10,10 @@ public class ReflectiveProject extends ProjectModule {
     public void build(Builder builder) {
         builder
             .cookbook(JavaProject.class)
-                .produces(new Artifact("com.goodworkalan/reflective/0.1"))
+                .produces(new Artifact("com.github.bigeasy.reflective/reflective/0.1"))
                 .test()
                     .depends()
-                        .artifact(new Artifact("org.testng/testng/5.10/jdk15"))
+                        .artifact(new Artifact("org.testng/testng-jdk15/5.10"))
                         .end()
                     .end()
                 .end()
