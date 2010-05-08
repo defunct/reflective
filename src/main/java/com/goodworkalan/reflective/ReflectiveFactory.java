@@ -4,6 +4,7 @@ import static com.goodworkalan.reflective.ReflectiveException.ILLEGAL_ACCESS;
 import static com.goodworkalan.reflective.ReflectiveException.INSTANCIATION;
 import static com.goodworkalan.reflective.ReflectiveException.NO_SUCH_METHOD;
 import static com.goodworkalan.reflective.ReflectiveException.SECURITY;
+import static com.goodworkalan.reflective.ReflectiveException.STATIC_INITIALIZER;
 
 /**
  * A factory to create constructor and method wrappers that you can override in
@@ -12,8 +13,21 @@ import static com.goodworkalan.reflective.ReflectiveException.SECURITY;
  * @author Alan Gutierrez
  */
 public class ReflectiveFactory {
-    // FIXME Document!
-    // FIXME Catch SecurityException.
+    /**
+     * Construct a new instance of the given type.
+     * 
+     * @param <T>
+     *            The type of object to construct.
+     * @param type
+     *            The class.
+     * @return @return A new instance of the class.
+     * @throws ReflectiveException
+     *             If the constructor is invoked with an illegal argument, if
+     *             the class is abstract or an instance, if the constructor is
+     *             not accessible to the caller, if the static initialization of
+     *             the class raises an exception, or if the constructor raises
+     *             an exception.
+     */
     public <T> T newInstance(Class<T> type) throws ReflectiveException {
         try {
             return type.newInstance();
@@ -21,6 +35,10 @@ public class ReflectiveFactory {
             throw new ReflectiveException(INSTANCIATION, e);
         } catch (IllegalAccessException e) {
             throw new ReflectiveException(ILLEGAL_ACCESS, e);
+        } catch (SecurityException e) {
+            throw new ReflectiveException(SECURITY, e);
+        } catch (ExceptionInInitializerError e) {
+            throw new ReflectiveException(STATIC_INITIALIZER, e);
         }
     }
 

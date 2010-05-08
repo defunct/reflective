@@ -4,6 +4,7 @@ import static com.goodworkalan.reflective.ReflectiveException.ILLEGAL_ACCESS;
 import static com.goodworkalan.reflective.ReflectiveException.ILLEGAL_ARGUMENT;
 import static com.goodworkalan.reflective.ReflectiveException.INSTANCIATION;
 import static com.goodworkalan.reflective.ReflectiveException.INVOCATION_TARGET;
+import static com.goodworkalan.reflective.ReflectiveException.STATIC_INITIALIZER;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -46,12 +47,13 @@ public class Constructor<T> {
      *            The target object.
      * @param args
      *            The method arguments.
-     * @return The result of the method invocation.
+     * @return A new instance of the class.
      * @throws ReflectiveException
      *             If the constructor is invoked with an illegal argument, if
      *             the class is abstract or an instance, if the constructor is
-     *             not accessible to the caller, or if the constructor raises an
-     *             exception.
+     *             not accessible to the caller, if the static initialization of
+     *             the class raises an exception, or if the constructor raises
+     *             an exception.
      */
     public T newInstance(Object... initargs) throws ReflectiveException {
         try {
@@ -64,6 +66,8 @@ public class Constructor<T> {
             throw new ReflectiveException(ILLEGAL_ACCESS, e);
         } catch (InvocationTargetException e) {
             throw new ReflectiveException(INVOCATION_TARGET, e);
+        } catch (ExceptionInInitializerError e) {
+            throw new ReflectiveException(STATIC_INITIALIZER, e);
         }
     }
 

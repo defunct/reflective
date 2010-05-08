@@ -10,12 +10,18 @@ import java.security.Permission;
 
 import org.testng.annotations.Test;
 
+/**
+ * Unit tests for the {@link Constructor} class.
+ *
+ * @author Alan Gutierrez
+ */
 public class ConstructorTest {
     @Test
     public void getNative() throws Exception {
         assertEquals(new ReflectiveFactory().getConstructor(Basic.class).getNative(), Basic.class.getConstructor());
     }
 
+    /** Test security exceptions. */
     @Test
     public void security() {
         SecurityManager sm = System.getSecurityManager();
@@ -42,6 +48,7 @@ public class ConstructorTest {
         fail("Expected exception not thrown.");
     }
     
+    /** Test no such method exception. */
     @Test
     public void noSuchMethod() {
         try {
@@ -53,6 +60,7 @@ public class ConstructorTest {
         fail("Expected exception not thrown.");
     }
 
+    /** Test illegal argument exception. */
     @Test
     public void illegalArgument() {
         try {
@@ -64,6 +72,7 @@ public class ConstructorTest {
         fail("Expected exception not thrown.");
     }
 
+    /** Test instanciation exception. */
     @Test
     public void instanciation() {
         try {
@@ -76,6 +85,7 @@ public class ConstructorTest {
     }
     
 
+    /** Test illegal access exception. */
     @SuppressWarnings("unchecked")
     @Test
     public void illegalAccess() {
@@ -92,6 +102,7 @@ public class ConstructorTest {
         fail("Expected exception not thrown.");
     }
     
+    /** Test invocation target exception. */
     @Test
     public void invocationTarget() {
         try {
@@ -103,6 +114,18 @@ public class ConstructorTest {
         fail("Expected exception not thrown.");
     }
     
+    /** Test static initialization exception. */
+    @Test(expectedExceptions = ReflectiveException.class)
+    public void staticInitialization() throws ReflectiveException {
+        try {
+            new ReflectiveFactory().getConstructor(BadStaticOne.class).newInstance();
+        } catch (ReflectiveException e) {
+            assertEquals(e.getCode(), ReflectiveException.STATIC_INITIALIZER);
+            throw e;
+        }
+    }
+
+    /** Test equality. */
     @Test
     public void equality() throws ReflectiveException {
         Constructor<Basic> one = new ReflectiveFactory().getConstructor(Basic.class, double.class);

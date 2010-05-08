@@ -36,6 +36,9 @@ public class ReflectiveException extends Exception {
     /** The constructor or method threw an exception. */
     public static final int INVOCATION_TARGET = 204;
 
+    /** The static initialization threw an exception. */
+    public static final int STATIC_INITIALIZER = 205;
+    
     /** The constructor or method is protected by the current security policy. */
     public final static int SECURITY = 101;
 

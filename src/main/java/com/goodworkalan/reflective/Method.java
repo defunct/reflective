@@ -3,6 +3,7 @@ package com.goodworkalan.reflective;
 import static com.goodworkalan.reflective.ReflectiveException.ILLEGAL_ACCESS;
 import static com.goodworkalan.reflective.ReflectiveException.ILLEGAL_ARGUMENT;
 import static com.goodworkalan.reflective.ReflectiveException.INVOCATION_TARGET;
+import static com.goodworkalan.reflective.ReflectiveException.STATIC_INITIALIZER;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -48,8 +49,9 @@ public class Method {
      * @return The result of the method invocation.
      * @throws ReflectiveException
      *             If the method is invoked with an illegal argument, if the
-     *             method is not accessible to the caller, or if the method
-     *             invoked raises an exception.
+     *             method is not accessible to the caller, if the static
+     *             initialization of the class raises an exception, or if the
+     *             method invoked raises an exception.
      * 
      */
     public Object invoke(Object obj, Object...args) throws ReflectiveException {
@@ -61,6 +63,8 @@ public class Method {
             throw new ReflectiveException(ILLEGAL_ACCESS, e);
         } catch (InvocationTargetException e) {
             throw new ReflectiveException(INVOCATION_TARGET, e);
+        } catch (ExceptionInInitializerError e) {
+            throw new ReflectiveException(STATIC_INITIALIZER, e);
         }
     }
 

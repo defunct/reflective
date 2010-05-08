@@ -10,12 +10,19 @@ import java.security.Permission;
 
 import org.testng.annotations.Test;
 
+/**
+ * Unit tests for the {@link Method} class.
+ *
+ * @author Alan Gutierrez
+ */
 public class MethodTest {
+    /** Test get native. */
     @Test
     public void getNative() throws Exception {
         assertEquals(new ReflectiveFactory().getMethod(Basic.class, "foo").getNative(), Basic.class.getMethod("foo"));
     }
 
+    /** Test the security exception. */
     @Test
     public void security() {
         SecurityManager sm = System.getSecurityManager();
@@ -42,7 +49,7 @@ public class MethodTest {
         fail("Expected exception not thrown.");
     }
     
-    
+    /** Test the no such exception. */
     @Test
     public void noSuchMethod() {
         try {
@@ -54,7 +61,7 @@ public class MethodTest {
         fail("Expected exception not thrown.");
     }
     
-
+    /** Test the illegal argument exception. */
     @Test
     public void illegalArgument() {
         try {
@@ -66,6 +73,7 @@ public class MethodTest {
         fail("Expected exception not thrown.");
     }
     
+    /** Test the illegal access exception. */
     @Test
     public void illegalAccess() {
         for (java.lang.reflect.Method method : Basic.class.getDeclaredMethods()) {
@@ -81,6 +89,7 @@ public class MethodTest {
         fail("Expected exception not thrown.");
     }
 
+    /** Test the invocation exception. */
     @Test
     public void invocationTarget() {
         try {
@@ -91,7 +100,19 @@ public class MethodTest {
         }
         fail("Expected exception not thrown.");
     }
+
+    /** Test static initialization exception. */
+    @Test(expectedExceptions = ReflectiveException.class)
+    public void staticInitialization() throws ReflectiveException {
+        try {
+            new ReflectiveFactory().getMethod(BadStaticTwo.class, "test").invoke(null);
+        } catch (ReflectiveException e) {
+            assertEquals(e.getCode(), ReflectiveException.STATIC_INITIALIZER);
+            throw e;
+        }
+    }
     
+    /** Test equality. */
     @Test
     public void equality() throws ReflectiveException {
         Method blam = new ReflectiveFactory().getMethod(Basic.class, "blam");
