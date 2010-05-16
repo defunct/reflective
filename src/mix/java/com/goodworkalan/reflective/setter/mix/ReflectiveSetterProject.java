@@ -20,15 +20,9 @@ public class ReflectiveSetterProject implements ProjectModule {
         builder
             .cookbook(JavaProject.class)
                 .produces("com.github.bigeasy.reflective/reflective-setter/0.1")
-                .main()
-                    .depends()
-                        .include("com.github.bigeasy.reflective/reflective/0.+1")
-                        .end()
-                    .end()
-                .test()
-                    .depends()
-                        .include("org.testng/testng-jdk15/5.10")
-                        .end()
+                .depends()
+                    .production("com.github.bigeasy.reflective/reflective/0.+1")
+                    .development("org.testng/testng-jdk15/5.10")
                     .end()
                 .end()
             .end();
