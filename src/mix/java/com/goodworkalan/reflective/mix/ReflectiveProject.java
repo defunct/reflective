@@ -19,7 +19,7 @@ public class ReflectiveProject implements ProjectModule {
     public void build(Builder builder) {
         builder
             .cookbook(JavaProject.class)
-                .produces("com.github.bigeasy.reflective/reflective/0.1")
+                .produces("com.github.bigeasy.reflective/reflective/0.3")
                 .test()
                     .depends()
                         .include("org.testng/testng-jdk15/5.10")
