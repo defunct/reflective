@@ -9,7 +9,6 @@ import java.beans.PropertyDescriptor;
 
 import org.testng.annotations.Test;
 
-import com.goodworkalan.reflective.Method;
 import com.goodworkalan.reflective.ReflectiveException;
 
 /**
@@ -26,7 +25,7 @@ public class MethodGetterTest {
         widget.setTwo("Two");
         BeanInfo beanInfo = Introspector.getBeanInfo(Widget.class, Object.class);
         PropertyDescriptor property = beanInfo.getPropertyDescriptors()[0];
-        MethodGetter methodGetter = new MethodGetter(new Method(property.getReadMethod()), property.getName());
+        MethodGetter methodGetter = new MethodGetter(property.getReadMethod(), property.getName());
         assertEquals(methodGetter.get(widget), "Two");
         assertEquals(methodGetter.getName(), "two");
         assertEquals(methodGetter.getType(), String.class);

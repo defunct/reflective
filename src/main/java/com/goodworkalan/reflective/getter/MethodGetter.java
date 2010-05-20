@@ -1,9 +1,12 @@
 package com.goodworkalan.reflective.getter;
 
 import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 
-import com.goodworkalan.reflective.Method;
+import com.goodworkalan.reflective.Reflection;
+import com.goodworkalan.reflective.Reflective;
 import com.goodworkalan.reflective.ReflectiveException;
 
 /**
@@ -41,8 +44,12 @@ public class MethodGetter implements Getter {
      * @throws ReflectiveException
      *             If an exception occurs during reflection.
      */
-    public Object get(Object object) throws ReflectiveException {
-        return method.invoke(object);
+    public Object get(final Object object) throws ReflectiveException {
+        return new Reflective().reflect(new Reflection<Object>() {
+            public Object reflect() throws IllegalAccessException, InvocationTargetException {
+                return method.invoke(object);
+            }
+        });
     }
 
     /**
@@ -60,7 +67,7 @@ public class MethodGetter implements Getter {
      * @return The property type.
      */
     public Class<?> getType() {
-        return method.getNative().getReturnType();
+        return method.getReturnType();
     }
     
     /**
@@ -69,7 +76,7 @@ public class MethodGetter implements Getter {
      * @return The member.
      */
     public Member getMember() {
-        return method.getNative();
+        return method;
     }
 
     /**
@@ -78,6 +85,6 @@ public class MethodGetter implements Getter {
      * @return The accessible object.
      */
     public AccessibleObject getAccessibleObject() {
-        return method.getNative();
+        return method;
     }
 }

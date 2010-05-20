@@ -1,9 +1,11 @@
 package com.goodworkalan.reflective.getter;
 
 import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 
-import com.goodworkalan.reflective.Field;
+import com.goodworkalan.reflective.Reflection;
+import com.goodworkalan.reflective.Reflective;
 import com.goodworkalan.reflective.ReflectiveException;
 
 /**
@@ -34,8 +36,12 @@ public class FieldGetter implements Getter {
      * @throws ReflectiveException
      *             If an exception is thrown during reflection.
      */
-    public Object get(Object object) throws ReflectiveException {
-        return field.get(object);
+    public Object get(final Object object) throws ReflectiveException {
+        return new Reflective().reflect(new Reflection<Object>() {
+            public Object reflect() throws IllegalAccessException {
+                return field.get(object);
+            }
+        });
     }
 
     /**
@@ -44,7 +50,7 @@ public class FieldGetter implements Getter {
      * @return The field name.
      */
     public String getName() {
-        return field.getNative().getName();
+        return field.getName();
     }
     
     /**
@@ -53,7 +59,7 @@ public class FieldGetter implements Getter {
      * @return The field type.
      */
     public Class<?> getType() {
-        return field.getNative().getType();
+        return field.getType();
     }
     
     /**
@@ -62,7 +68,7 @@ public class FieldGetter implements Getter {
      * @return The member.
      */
     public Member getMember() {
-        return field.getNative();
+        return field;
     }
 
     /**
@@ -71,6 +77,6 @@ public class FieldGetter implements Getter {
      * @return The accessible object.
      */
     public AccessibleObject getAccessibleObject() {
-        return field.getNative();
+        return field;
     }
 }

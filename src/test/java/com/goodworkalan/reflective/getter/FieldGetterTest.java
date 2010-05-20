@@ -6,7 +6,6 @@ import java.beans.IntrospectionException;
 
 import org.testng.annotations.Test;
 
-import com.goodworkalan.reflective.Field;
 import com.goodworkalan.reflective.ReflectiveException;
 
 /**
@@ -21,7 +20,7 @@ public class FieldGetterTest {
         Widget widget = new Widget();
         widget.one = "One";
         widget.setTwo("Two");
-        FieldGetter fieldGetter = new FieldGetter(new Field(Widget.class.getField("one")));
+        FieldGetter fieldGetter = new FieldGetter(Widget.class.getField("one"));
         assertEquals(fieldGetter.get(widget), "One");
         assertEquals(fieldGetter.getName(), "one");
         assertEquals(fieldGetter.getType(), String.class);
