@@ -1,8 +1,15 @@
 package com.goodworkalan.reflective;
 
-import static com.goodworkalan.reflective.ReflectiveException.*;
+import static com.goodworkalan.reflective.Reflective.ILLEGAL_ACCESS;
+import static com.goodworkalan.reflective.Reflective.ILLEGAL_ARGUMENT;
+import static com.goodworkalan.reflective.Reflective.INSTANCIATION;
+import static com.goodworkalan.reflective.Reflective.INVOCATION_TARGET;
+import static com.goodworkalan.reflective.Reflective.NO_SUCH_METHOD;
+import static com.goodworkalan.reflective.Reflective.SECURITY;
+import static com.goodworkalan.reflective.Reflective.STATIC_INITIALIZER;
 import static org.testng.Assert.assertEquals;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -42,7 +49,7 @@ public class ReflectiveTest {
         try {
             exceptional(new Exceptional() {
                 public void run() throws ReflectiveException {
-                    new Reflective().reflect(new Reflection<Constructor<Basic>>() {
+                    reflect(new Reflection<Constructor<Basic>>() {
                         public Constructor<Basic> reflect() throws NoSuchMethodException {
                             return Basic.class.getConstructor();
                         }
@@ -59,7 +66,7 @@ public class ReflectiveTest {
     public void noSuchMethod() throws ReflectiveException {
         exceptional(new Exceptional() {
             public void run() throws ReflectiveException {
-                new Reflective().reflect(new Reflection<Constructor<Basic>>() {
+                reflect(new Reflection<Constructor<Basic>>() {
                     public Constructor<Basic> reflect() throws NoSuchMethodException {
                         return Basic.class.getConstructor(String.class);
                     }
@@ -73,7 +80,7 @@ public class ReflectiveTest {
     public void noSuchField() throws ReflectiveException {
         exceptional(new Exceptional() {
             public void run() throws ReflectiveException {
-                new Reflective().reflect(new Reflection<Field>() {
+                reflect(new Reflection<Field>() {
                     public Field reflect() throws NoSuchFieldException {
                         return Basic.class.getField("snap");
                     }
@@ -87,7 +94,7 @@ public class ReflectiveTest {
     public void illegalArgument() throws ReflectiveException {
         exceptional(new Exceptional() {
             public void run() throws ReflectiveException {
-                new Reflective().reflect(new Reflection<Basic>() {
+                reflect(new Reflection<Basic>() {
                     public Basic reflect()
                     throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
                         return Basic.class.getConstructor(int.class).newInstance("1");
@@ -102,7 +109,7 @@ public class ReflectiveTest {
     public void instanciation() throws ReflectiveException {
         exceptional(new Exceptional() {
             public void run() throws ReflectiveException {
-                new Reflective().reflect(new Reflection<Abstraction>() {
+                reflect(new Reflection<Abstraction>() {
                     public Abstraction reflect()
                     throws InstantiationException, IllegalAccessException {
                         return Abstraction.class.newInstance();
@@ -118,7 +125,7 @@ public class ReflectiveTest {
     public void illegalAccess() throws ReflectiveException {
         exceptional(new Exceptional() {
             public void run() throws ReflectiveException {
-                new Reflective().reflect(new Reflection<Object>() {
+                reflect(new Reflection<Object>() {
                     public Object reflect()
                     throws InstantiationException, IllegalAccessException, InvocationTargetException {
                         for (java.lang.reflect.Method method : Basic.class.getDeclaredMethods()) {
@@ -138,7 +145,7 @@ public class ReflectiveTest {
     public void invocationTarget() throws ReflectiveException {
         exceptional(new Exceptional() {
             public void run() throws ReflectiveException {
-                new Reflective().reflect(new Reflection<Basic>() {
+                reflect(new Reflection<Basic>() {
                     public Basic reflect()
                     throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
                         return Basic.class.getConstructor(double.class).newInstance(1.1);
@@ -153,7 +160,7 @@ public class ReflectiveTest {
     public void staticInitialization() throws ReflectiveException {
         exceptional(new Exceptional() {
             public void run() throws ReflectiveException {
-                new Reflective().reflect(new Reflection<BadStatic>() {
+                reflect(new Reflection<BadStatic>() {
                     public BadStatic reflect()
                     throws InstantiationException, IllegalAccessException {
                         return BadStatic.class.newInstance();
@@ -166,6 +173,24 @@ public class ReflectiveTest {
     /** Create a callback from a code block that throws a reflective exception. */
     private static interface Exceptional {
         public void run() throws ReflectiveException;
+    }
+    
+    /** Test passing encode an error. */
+    @Test(expectedExceptions = Error.class)
+    public void error() {
+        Reflective.encode(new Error());
+    }
+    
+    /** Test passing encode an unknown runtime exception. */
+    @Test(expectedExceptions = RuntimeException.class)
+    public void runtimeException() {
+        Reflective.encode(new RuntimeException());
+    }
+    
+    /** Test passing encode an unknown exception. */
+    @Test(expectedExceptions = RuntimeException.class)
+    public void exception() {
+        Reflective.encode(new IOException());
     }
 
     /**
@@ -185,6 +210,14 @@ public class ReflectiveTest {
         } catch (ReflectiveException e) {
             assertEquals(e.getCode(), code);
             throw e;
+        }
+    }
+    
+    static <T> void reflect(Reflection<T> reflection) throws ReflectiveException {
+        try {
+            reflection.reflect();
+        } catch (Throwable e) {
+            throw new ReflectiveException(Reflective.encode(e), e);
         }
     }
 }
