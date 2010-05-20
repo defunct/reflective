@@ -11,7 +11,7 @@ import static com.goodworkalan.reflective.ReflectiveException.STATIC_INITIALIZER
 import java.lang.reflect.InvocationTargetException;
 
 public class Reflective {
-    public static <T> T reflect(Reflection<T> reflection) throws ReflectiveException {
+    public <T> T reflect(Reflection<T> reflection) throws ReflectiveException {
         try {
             return reflection.reflect();
         } catch (SecurityException e) {

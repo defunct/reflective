@@ -42,7 +42,7 @@ public class ReflectiveTest {
         try {
             exceptional(new Exceptional() {
                 public void run() throws ReflectiveException {
-                    Reflective.reflect(new Reflection<Constructor<Basic>>() {
+                    new Reflective().reflect(new Reflection<Constructor<Basic>>() {
                         public Constructor<Basic> reflect() throws NoSuchMethodException {
                             return Basic.class.getConstructor();
                         }
@@ -59,7 +59,7 @@ public class ReflectiveTest {
     public void noSuchMethod() throws ReflectiveException {
         exceptional(new Exceptional() {
             public void run() throws ReflectiveException {
-                Reflective.reflect(new Reflection<Constructor<Basic>>() {
+                new Reflective().reflect(new Reflection<Constructor<Basic>>() {
                     public Constructor<Basic> reflect() throws NoSuchMethodException {
                         return Basic.class.getConstructor(String.class);
                     }
@@ -73,7 +73,7 @@ public class ReflectiveTest {
     public void noSuchField() throws ReflectiveException {
         exceptional(new Exceptional() {
             public void run() throws ReflectiveException {
-                Reflective.reflect(new Reflection<Field>() {
+                new Reflective().reflect(new Reflection<Field>() {
                     public Field reflect() throws NoSuchFieldException {
                         return Basic.class.getField("snap");
                     }
@@ -87,7 +87,7 @@ public class ReflectiveTest {
     public void illegalArgument() throws ReflectiveException {
         exceptional(new Exceptional() {
             public void run() throws ReflectiveException {
-                Reflective.reflect(new Reflection<Basic>() {
+                new Reflective().reflect(new Reflection<Basic>() {
                     public Basic reflect()
                     throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
                         return Basic.class.getConstructor(int.class).newInstance("1");
@@ -102,7 +102,7 @@ public class ReflectiveTest {
     public void instanciation() throws ReflectiveException {
         exceptional(new Exceptional() {
             public void run() throws ReflectiveException {
-                Reflective.reflect(new Reflection<Abstraction>() {
+                new Reflective().reflect(new Reflection<Abstraction>() {
                     public Abstraction reflect()
                     throws InstantiationException, IllegalAccessException {
                         return Abstraction.class.newInstance();
@@ -118,7 +118,7 @@ public class ReflectiveTest {
     public void illegalAccess() throws ReflectiveException {
         exceptional(new Exceptional() {
             public void run() throws ReflectiveException {
-                Reflective.reflect(new Reflection<Object>() {
+                new Reflective().reflect(new Reflection<Object>() {
                     public Object reflect()
                     throws InstantiationException, IllegalAccessException, InvocationTargetException {
                         for (java.lang.reflect.Method method : Basic.class.getDeclaredMethods()) {
@@ -138,7 +138,7 @@ public class ReflectiveTest {
     public void invocationTarget() throws ReflectiveException {
         exceptional(new Exceptional() {
             public void run() throws ReflectiveException {
-                Reflective.reflect(new Reflection<Basic>() {
+                new Reflective().reflect(new Reflection<Basic>() {
                     public Basic reflect()
                     throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
                         return Basic.class.getConstructor(double.class).newInstance(1.1);
@@ -153,7 +153,7 @@ public class ReflectiveTest {
     public void staticInitialization() throws ReflectiveException {
         exceptional(new Exceptional() {
             public void run() throws ReflectiveException {
-                Reflective.reflect(new Reflection<BadStatic>() {
+                new Reflective().reflect(new Reflection<BadStatic>() {
                     public BadStatic reflect()
                     throws InstantiationException, IllegalAccessException {
                         return BadStatic.class.newInstance();
