@@ -1,9 +1,11 @@
 package com.goodworkalan.reflective.setter;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 
-import com.goodworkalan.reflective.Field;
+import com.goodworkalan.reflective.Reflective;
 import com.goodworkalan.reflective.ReflectiveException;
+
 
 public class FieldSetter implements Setter {
     private final Field field;
@@ -15,8 +17,12 @@ public class FieldSetter implements Setter {
     /**
      * Set the field associated with this setter in the given object to the given value.
      */
-    public void set(Object object, Object value) throws ReflectiveException {
-        field.set(object, value);
+    public void set(final Object object, final Object value) throws ReflectiveException {
+        try {
+            field.set(object, value);
+        } catch (Throwable e) {
+            throw new ReflectiveException(Reflective.encode(e), e);
+        }
     }
     
     /**
@@ -25,7 +31,7 @@ public class FieldSetter implements Setter {
      * @return The underlying field.
      */
     public Member getNative() {
-        return field.getNative();
+        return field;
     }
 
     /**
@@ -34,6 +40,6 @@ public class FieldSetter implements Setter {
      * @return The property type.
      */
     public Class<?> getType() {
-        return field.getNative().getType();
+        return field.getType();
     }
 }

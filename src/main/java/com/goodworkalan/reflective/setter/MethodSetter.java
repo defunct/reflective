@@ -1,8 +1,9 @@
 package com.goodworkalan.reflective.setter;
 
 import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 
-import com.goodworkalan.reflective.Method;
+import com.goodworkalan.reflective.Reflective;
 import com.goodworkalan.reflective.ReflectiveException;
 
 /**
@@ -35,8 +36,12 @@ public class MethodSetter implements Setter {
      * @param value
      *            The property value.
      */
-    public void set(Object object, Object value) throws ReflectiveException {
-        method.invoke(object, value);
+    public void set(final Object object, final Object value) throws ReflectiveException {
+        try {
+            method.invoke(object, value);
+        } catch (Throwable e) {
+            throw new ReflectiveException(Reflective.encode(e), e);
+        }
     }
     
     /**
@@ -45,7 +50,7 @@ public class MethodSetter implements Setter {
      * @return The underlying method.
      */
     public Member getNative() {
-        return method.getNative();
+        return method;
     }
     
     /**
@@ -54,6 +59,6 @@ public class MethodSetter implements Setter {
      * @return The property type.
      */
     public Class<?> getType() {
-        return method.getNative().getParameterTypes()[0];
+        return method.getParameterTypes()[0];
     }
 }
