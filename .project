@@ -1,5 +1,5 @@
 <projectDescription>
-  <name>reflective-redux</name>
+  <name>reflective</name>
   <comment>A wrapper around the Java reflection API that fixes the
     exception heirarchy.</comment>
   <projects/>

@@ -31,8 +31,8 @@ public class ReflectiveTest {
     }
     
     /** Test security exceptions. */
-    @Test(expectedExceptions = ReflectiveException.class)
-    public void security() throws ReflectiveException {
+    @Test(expectedExceptions = ReflectionException.class)
+    public void security() throws ReflectionException {
         SecurityManager sm = System.getSecurityManager();
         System.setSecurityManager(new SecurityManager() {
             @Override
@@ -48,7 +48,7 @@ public class ReflectiveTest {
         });
         try {
             exceptional(new Exceptional() {
-                public void run() throws ReflectiveException {
+                public void run() throws ReflectionException {
                     reflect(new Reflection<Constructor<Basic>>() {
                         public Constructor<Basic> reflect() throws NoSuchMethodException {
                             return Basic.class.getConstructor();
@@ -62,10 +62,10 @@ public class ReflectiveTest {
     }
     
     /** Test no such method exception. */
-    @Test(expectedExceptions = ReflectiveException.class)
-    public void noSuchMethod() throws ReflectiveException {
+    @Test(expectedExceptions = ReflectionException.class)
+    public void noSuchMethod() throws ReflectionException {
         exceptional(new Exceptional() {
-            public void run() throws ReflectiveException {
+            public void run() throws ReflectionException {
                 reflect(new Reflection<Constructor<Basic>>() {
                     public Constructor<Basic> reflect() throws NoSuchMethodException {
                         return Basic.class.getConstructor(String.class);
@@ -76,10 +76,10 @@ public class ReflectiveTest {
     }
     
     /** Test the no such field exception. */
-    @Test(expectedExceptions = ReflectiveException.class)
-    public void noSuchField() throws ReflectiveException {
+    @Test(expectedExceptions = ReflectionException.class)
+    public void noSuchField() throws ReflectionException {
         exceptional(new Exceptional() {
-            public void run() throws ReflectiveException {
+            public void run() throws ReflectionException {
                 reflect(new Reflection<Field>() {
                     public Field reflect() throws NoSuchFieldException {
                         return Basic.class.getField("snap");
@@ -90,10 +90,10 @@ public class ReflectiveTest {
     }
 
     /** Test illegal argument exception. */
-    @Test(expectedExceptions = ReflectiveException.class)
-    public void illegalArgument() throws ReflectiveException {
+    @Test(expectedExceptions = ReflectionException.class)
+    public void illegalArgument() throws ReflectionException {
         exceptional(new Exceptional() {
-            public void run() throws ReflectiveException {
+            public void run() throws ReflectionException {
                 reflect(new Reflection<Basic>() {
                     public Basic reflect()
                     throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
@@ -105,10 +105,10 @@ public class ReflectiveTest {
     }
 
     /** Test instanciation exception. */
-    @Test(expectedExceptions = ReflectiveException.class)
-    public void instanciation() throws ReflectiveException {
+    @Test(expectedExceptions = ReflectionException.class)
+    public void instanciation() throws ReflectionException {
         exceptional(new Exceptional() {
-            public void run() throws ReflectiveException {
+            public void run() throws ReflectionException {
                 reflect(new Reflection<Abstraction>() {
                     public Abstraction reflect()
                     throws InstantiationException, IllegalAccessException {
@@ -121,10 +121,10 @@ public class ReflectiveTest {
     
 
     /** Test illegal argument exception. */
-    @Test(expectedExceptions = ReflectiveException.class)
-    public void illegalAccess() throws ReflectiveException {
+    @Test(expectedExceptions = ReflectionException.class)
+    public void illegalAccess() throws ReflectionException {
         exceptional(new Exceptional() {
-            public void run() throws ReflectiveException {
+            public void run() throws ReflectionException {
                 reflect(new Reflection<Object>() {
                     public Object reflect()
                     throws InstantiationException, IllegalAccessException, InvocationTargetException {
@@ -141,10 +141,10 @@ public class ReflectiveTest {
     }
 
     /** Test invocation target exception. */
-    @Test(expectedExceptions = ReflectiveException.class)
-    public void invocationTarget() throws ReflectiveException {
+    @Test(expectedExceptions = ReflectionException.class)
+    public void invocationTarget() throws ReflectionException {
         exceptional(new Exceptional() {
-            public void run() throws ReflectiveException {
+            public void run() throws ReflectionException {
                 reflect(new Reflection<Basic>() {
                     public Basic reflect()
                     throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
@@ -156,10 +156,10 @@ public class ReflectiveTest {
     }
     
     /** Test static initialization exception. */
-    @Test(expectedExceptions = ReflectiveException.class)
-    public void staticInitialization() throws ReflectiveException {
+    @Test(expectedExceptions = ReflectionException.class)
+    public void staticInitialization() throws ReflectionException {
         exceptional(new Exceptional() {
-            public void run() throws ReflectiveException {
+            public void run() throws ReflectionException {
                 reflect(new Reflection<BadStatic>() {
                     public BadStatic reflect()
                     throws InstantiationException, IllegalAccessException {
@@ -172,7 +172,7 @@ public class ReflectiveTest {
 
     /** Create a callback from a code block that throws a reflective exception. */
     private static interface Exceptional {
-        public void run() throws ReflectiveException;
+        public void run() throws ReflectionException;
     }
     
     /** Test passing encode an error. */
@@ -201,23 +201,23 @@ public class ReflectiveTest {
      *            The exceptional code block.
      * @param code
      *            The expected error code.
-     * @throws ReflectiveException
+     * @throws ReflectionException
      *             If successful.
      */
-    private static void exceptional(Exceptional runnable, int code) throws ReflectiveException {
+    private static void exceptional(Exceptional runnable, int code) throws ReflectionException {
         try { 
             runnable.run();
-        } catch (ReflectiveException e) {
+        } catch (ReflectionException e) {
             assertEquals(e.getCode(), code);
             throw e;
         }
     }
     
-    static <T> void reflect(Reflection<T> reflection) throws ReflectiveException {
+    static <T> void reflect(Reflection<T> reflection) throws ReflectionException {
         try {
             reflection.reflect();
         } catch (Throwable e) {
-            throw new ReflectiveException(Reflective.encode(e), e);
+            throw new ReflectionException(Reflective.encode(e), e);
         }
     }
 }

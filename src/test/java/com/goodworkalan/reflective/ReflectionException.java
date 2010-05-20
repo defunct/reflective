@@ -8,7 +8,7 @@ package com.goodworkalan.reflective;
  * 
  * @author Alan Gutierrez
  */
-public class ReflectiveException extends Exception {
+public class ReflectionException extends Exception {
     /** Serial version id. */
     private static final long serialVersionUID = 1L;
 
@@ -23,7 +23,7 @@ public class ReflectiveException extends Exception {
      * @param cause
      *            The cause.
      */
-    public ReflectiveException(int code, Throwable cause) {
+    public ReflectionException(int code, Throwable cause) {
         super(cause.getMessage(), cause);
         this.code = code;
     }
