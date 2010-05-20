@@ -4,7 +4,6 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 
-import com.goodworkalan.reflective.Reflection;
 import com.goodworkalan.reflective.Reflective;
 import com.goodworkalan.reflective.ReflectiveException;
 
@@ -37,11 +36,11 @@ public class FieldGetter implements Getter {
      *             If an exception is thrown during reflection.
      */
     public Object get(final Object object) throws ReflectiveException {
-        return new Reflective().reflect(new Reflection<Object>() {
-            public Object reflect() throws IllegalAccessException {
-                return field.get(object);
-            }
-        });
+        try {
+            return field.get(object);
+        } catch (Throwable e) {
+            throw new ReflectiveException(Reflective.encode(e), e);
+        }
     }
 
     /**
