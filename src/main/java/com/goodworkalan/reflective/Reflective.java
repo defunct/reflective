@@ -43,14 +43,7 @@ public class Reflective {
     public static int encode(Throwable e) {
         if (e instanceof ExceptionInInitializerError) {
             return STATIC_INITIALIZER;
-        } else if (e instanceof Error) {
-            throw (Error) e;
-        }
-        return encode((Exception) e);
-    } 
-    
-    public static int encode(Exception e) {
-        if (e instanceof SecurityException) {
+        } else if (e instanceof SecurityException) {
             return SECURITY;
         } else if (e instanceof NoSuchMethodException) {
             return NO_SUCH_METHOD;
@@ -66,6 +59,8 @@ public class Reflective {
             return INVOCATION_TARGET;
         } else if (e instanceof RuntimeException) {
             throw (RuntimeException) e;
+        } else if (e instanceof Error) {
+            throw (Error) e;
         } else {
             throw new RuntimeException(e);
         }
