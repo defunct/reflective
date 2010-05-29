@@ -3,6 +3,7 @@ package com.goodworkalan.reflective.getter;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
+import java.lang.reflect.Type;
 
 import com.goodworkalan.reflective.Reflective;
 import com.goodworkalan.reflective.ReflectiveException;
@@ -59,6 +60,15 @@ public class FieldGetter implements Getter {
      */
     public Class<?> getType() {
         return field.getType();
+    }
+    
+    /**
+     * Get the generic field type.
+     * 
+     * @return The generic field type.
+     */
+    public Type getGenericType() {
+        return field.getGenericType();
     }
     
     /**

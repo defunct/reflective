@@ -3,6 +3,7 @@ package com.goodworkalan.reflective.getter;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
 import com.goodworkalan.reflective.Reflective;
 import com.goodworkalan.reflective.ReflectiveException;
@@ -66,6 +67,15 @@ public class MethodGetter implements Getter {
      */
     public Class<?> getType() {
         return method.getReturnType();
+    }
+    
+    /**
+     * Get the generic property type.
+     * 
+     * @return The generic property type.
+     */
+    public Type getGenericType() {
+        return method.getGenericReturnType();
     }
     
     /**

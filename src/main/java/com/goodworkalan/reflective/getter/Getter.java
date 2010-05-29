@@ -2,6 +2,7 @@ package com.goodworkalan.reflective.getter;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Member;
+import java.lang.reflect.Type;
 
 import com.goodworkalan.reflective.ReflectiveException;
 
@@ -37,6 +38,13 @@ public interface Getter {
      * @return The property type.
      */
     public Class<?> getType();
+
+    /**
+     * Get the generic property type.
+     * 
+     * @return The generic property type.
+     */
+    public Type getGenericType();
     
     /**
      * Get the underlying member.
