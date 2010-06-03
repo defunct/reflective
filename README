@@ -1,0 +1,3 @@
+REFLECTIVE EXCEPTION
+
+A default checked exception to raise to wrap reflection exceptions.
