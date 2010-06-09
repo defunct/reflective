@@ -2,7 +2,7 @@ package com.goodworkalan.reflective.mix;
 
 import com.goodworkalan.mix.ProjectModule;
 import com.goodworkalan.mix.builder.Builder;
-import com.goodworkalan.mix.builder.JavaProject;
+import com.goodworkalan.mix.cookbook.JavaProject;
 
 /**
  * Builds the project definition for Reflective.
@@ -20,10 +20,8 @@ public class ReflectiveProject implements ProjectModule {
         builder
             .cookbook(JavaProject.class)
                 .produces("com.github.bigeasy.reflective/reflective/0.5")
-                .test()
-                    .depends()
-                        .include("org.testng/testng-jdk15/5.10")
-                        .end()
+                .depends()
+                    .development("org.testng/testng-jdk15/5.10")
                     .end()
                 .end()
             .end();
