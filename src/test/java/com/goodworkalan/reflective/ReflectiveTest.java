@@ -213,6 +213,7 @@ public class ReflectiveTest {
         }
     }
     
+    // TODO Document.
     static <T> void reflect(Reflection<T> reflection) throws ReflectionException {
         try {
             reflection.reflect();
