@@ -1,8 +1,14 @@
 package com.goodworkalan.reflective;
 
-// TODO Document.
+/**
+ * An abstract class that cannot be instantiated directly.
+ *
+ * @author Alan Gutierrez
+ */
 public abstract class Abstraction {
-    // TODO Document.
+    /**
+     * The default constructor.
+     */
     public Abstraction() {
     }
 }

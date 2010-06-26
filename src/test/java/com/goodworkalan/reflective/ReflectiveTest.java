@@ -212,8 +212,17 @@ public class ReflectiveTest {
             throw e;
         }
     }
-    
-    // TODO Document.
+
+    /**
+     * Invoke a reflective operation and wrap the exception raised.
+     * 
+     * @param <T>
+     *            The return type of the reflection.
+     * @param reflection
+     *            The reflective operation.
+     * @throws ReflectionException
+     *             To wrap a reflection associated exception.
+     */
     static <T> void reflect(Reflection<T> reflection) throws ReflectionException {
         try {
             reflection.reflect();

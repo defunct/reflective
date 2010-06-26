@@ -1,42 +1,63 @@
 package com.goodworkalan.reflective;
 
-// TODO Document.
+/**
+ * A class to test reflection that causes all kinds of problems.
+ *
+ * @author Alan Gutierrez
+ */
 public class Basic {
-    // TODO Document.
+    /** Hidden member, cannot be called. */
     @SuppressWarnings("unused")
     private String secret;
 
-    // TODO Document.
+    /** A public field. */
     public String field;
 
-    // TODO Document.
+    /**
+     * A public constructor.
+     * 
+     * @param integer
+     *            The magic number.
+     */
     public Basic(int integer) {
     }
     
-    // TODO Document.
+    /**
+     * A private constructor.
+     * 
+     * @param ch
+     *            The scarlet letter.
+     */
     private Basic(char ch) {
     }
-    
-    // TODO Document.
+
+    /**
+     * A public constructor that raises an exception.
+     * 
+     * @param d
+     *            On the double.
+     */
     public Basic(double d) {
         throw new UnsupportedOperationException();
     }
     
-    // TODO Document.
+    /**
+     * The default constructor.
+     */
     public Basic() {
         this('.');
     }
     
-    // TODO Document.
+    /** A public method. */
     public void foo() {
         bar();
     }
     
-    // TODO Document.
+    /** A private method. */
     private void bar() {
     }
     
-    // TODO Document.
+    /** A method that always throws an exception. */
     public void blam() {
         throw new UnsupportedOperationException();
     }
