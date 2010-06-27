@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class Setters  {
     /** The cache of classes to their maps of setters. */
-    private final static ConcurrentMap<Class<?>, Map<String, Setter>> GETTERS = new ConcurrentHashMap<Class<?>, Map<String, Setter>>();
+    private final static ConcurrentMap<Class<?>, Map<String, Setter>> SETTERS = new ConcurrentHashMap<Class<?>, Map<String, Setter>>();
     
     /**
      * Get the bean properties for the given bean class. This method is
@@ -39,20 +39,20 @@ public class Setters  {
 
     /**
      * Get a map of the setters indexed on property name for the public
-     * properties and fields exposed by the given bean class.
+     * properties and fields exposed by the given type.
      * 
-     * @param beanClass
-     *            The bean class.
+     * @param type
+     *            The type.
      * @return A list of setters for the public properties and fields of the
      *         class.
      */
     public static Map<String, Setter> getGetters(Class<?> type) {
-        Map<String, Setter> getters = GETTERS.get(type);
+        Map<String, Setter> getters = SETTERS.get(type);
         if (getters == null) {
             getters = new LinkedHashMap<String, Setter>();
             BeanInfo beanInfo = introspect(type, Introspector.USE_ALL_BEANINFO);
             for (PropertyDescriptor descriptor : beanInfo.getPropertyDescriptors()) {
-                java.lang.reflect.Method read = descriptor.getReadMethod();
+                java.lang.reflect.Method read = descriptor.getWriteMethod();
                 if (read != null) {
                     String name = descriptor.getName();
                     getters.put(name, new MethodSetter(read, name));
@@ -61,8 +61,8 @@ public class Setters  {
             for (java.lang.reflect.Field field : type.getFields()) {
                 getters.put(field.getName(), new FieldSetter(field));
             }
-            GETTERS.put(type, Collections.unmodifiableMap(getters));
-            getters = GETTERS.get(type);
+            SETTERS.put(type, Collections.unmodifiableMap(getters));
+            getters = SETTERS.get(type);
         }
         return getters;
     }

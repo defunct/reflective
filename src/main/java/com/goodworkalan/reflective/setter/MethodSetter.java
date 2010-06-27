@@ -66,7 +66,7 @@ public class MethodSetter implements Setter {
      * @return The property type.
      */
     public Class<?> getType() {
-        return method.getReturnType();
+        return method.getParameterTypes()[0];
     }
     
     /**
@@ -75,7 +75,7 @@ public class MethodSetter implements Setter {
      * @return The generic property type.
      */
     public Type getGenericType() {
-        return method.getGenericReturnType();
+        return method.getGenericParameterTypes()[0];
     }
     
     /**

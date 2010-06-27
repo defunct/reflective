@@ -1,7 +1,8 @@
 package com.goodworkalan.reflective.setter;
 
+import static org.testng.Assert.assertTrue;
+
 import java.util.Map;
-import static org.testng.Assert.*;
 
 import org.testng.annotations.Test;
 
