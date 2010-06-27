@@ -1,15 +1,28 @@
 package com.goodworkalan.reflective.setter;
 
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
+import java.lang.reflect.Type;
 
 import com.goodworkalan.reflective.Reflective;
 import com.goodworkalan.reflective.ReflectiveException;
 
-
+/**
+ * A setter that writes a field value.
+ *
+ * @author Alan Gutierrez
+ */
 public class FieldSetter implements Setter {
+    /** The field. */
     private final Field field;
-    
+
+    /**
+     * Create a field setter using the given field.
+     * 
+     * @param field
+     *            The field.
+     */
     public FieldSetter(Field field) {
         this.field = field;
     }
@@ -24,22 +37,49 @@ public class FieldSetter implements Setter {
             throw new ReflectiveException(Reflective.encode(e), e);
         }
     }
+
+    /**
+     * Get the field name.
+     * 
+     * @return The field name.
+     */
+    public String getName() {
+        return field.getName();
+    }
     
     /**
-     * Return the underlying Java reflection field.
+     * Get the field type.
      * 
-     * @return The underlying field.
+     * @return The field type.
      */
-    public Member getNative() {
+    public Class<?> getType() {
+        return field.getType();
+    }
+    
+    /**
+     * Get the generic field type.
+     * 
+     * @return The generic field type.
+     */
+    public Type getGenericType() {
+        return field.getGenericType();
+    }
+    
+    /**
+     * Get the field as a member.
+     * 
+     * @return The member.
+     */
+    public Member getMember() {
         return field;
     }
 
     /**
-     * Get the property type.
+     * Get the field as an accessible object.
      * 
-     * @return The property type.
+     * @return The accessible object.
      */
-    public Class<?> getType() {
-        return field.getType();
+    public AccessibleObject getAccessibleObject() {
+        return field;
     }
 }

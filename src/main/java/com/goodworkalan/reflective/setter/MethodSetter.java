@@ -1,15 +1,15 @@
 package com.goodworkalan.reflective.setter;
 
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
 import com.goodworkalan.reflective.Reflective;
 import com.goodworkalan.reflective.ReflectiveException;
 
 /**
  * Sets an object property using a single object void method.
- * <p>
- * FIXME Move to reflective.
  * 
  * @author Alan Gutierrez
  */
@@ -17,14 +17,21 @@ public class MethodSetter implements Setter {
     /** The single argument void method. */
     private final Method method;
 
+    /** The property name. */
+    private final String name;
+
     /**
      * Create a method setter that uses the given single argument void method to
      * set an object property.
      * 
-     * @method The setter method.
+     * @param method
+     *            The setter method.
+     * @param name
+     *            The setter name.
      */
-    public MethodSetter(Method method) {
+    public MethodSetter(Method method, String name) {
         this.method = method;
+        this.name = name;
     }
 
     /**
@@ -43,22 +50,49 @@ public class MethodSetter implements Setter {
             throw new ReflectiveException(Reflective.encode(e), e);
         }
     }
-    
+
     /**
-     * Return the underlying Java reflection method.
+     * Get the property name.
      * 
-     * @return The underlying method.
+     * @return The property name.
      */
-    public Member getNative() {
-        return method;
+    public String getName() {
+        return name;
     }
-    
+
     /**
      * Get the property type.
      * 
      * @return The property type.
      */
     public Class<?> getType() {
-        return method.getParameterTypes()[0];
+        return method.getReturnType();
+    }
+    
+    /**
+     * Get the generic property type.
+     * 
+     * @return The generic property type.
+     */
+    public Type getGenericType() {
+        return method.getGenericReturnType();
+    }
+    
+    /**
+     * Get the method as a member.
+     * 
+     * @return The member.
+     */
+    public Member getMember() {
+        return method;
+    }
+
+    /**
+     * Get the method as an accessible object.
+     * 
+     * @return The accessible object.
+     */
+    public AccessibleObject getAccessibleObject() {
+        return method;
     }
 }
