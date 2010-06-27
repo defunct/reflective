@@ -41,8 +41,8 @@ public class Getters {
      * Get a map of the getters indexed on property name for the public
      * properties and fields exposed by the given bean class.
      * 
-     * @param beanClass
-     *            The bean class.
+     * @param type
+     *            The type.
      * @return A list of getters for the public properties and fields of the
      *         class.
      */
