@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: landing
 title: Reflective
 ---
 Let's use an example where we bootstrap an instance of a repository of
