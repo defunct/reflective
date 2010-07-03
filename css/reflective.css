@@ -485,7 +485,7 @@ body {
   margin-right: 0;
   padding-right: 0;
   height: 450px;
-  background: url(/images/Lete-a-Paris.jpg);
+  background: url(../images/Lete-a-Paris.jpg);
 }
 #article {
   float: left;
