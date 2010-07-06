@@ -5,9 +5,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 
-import com.goodworkalan.reflective.Reflective;
-import com.goodworkalan.reflective.ReflectiveException;
-
 /**
  * A setter that writes a field value.
  *
@@ -26,16 +23,23 @@ public class FieldSetter implements Setter {
     public FieldSetter(Field field) {
         this.field = field;
     }
-    
+
     /**
-     * Set the field associated with this setter in the given object to the given value.
+     * Set the field associated with this setter in the given object to the
+     * given value.
+     * 
+     * @param object
+     *            The object.
+     * @param value
+     *            The value.
+     * @throws IllegalAccessException
+     *             If the class or method is not visible.
+     * @exception IllegalArgumentException
+     *                If the value cannot be assigned to the field.
      */
-    public void set(final Object object, final Object value) throws ReflectiveException {
-        try {
-            field.set(object, value);
-        } catch (Throwable e) {
-            throw new ReflectiveException(Reflective.encode(e), e);
-        }
+    public void set(final Object object, final Object value)
+    throws IllegalArgumentException, IllegalAccessException  {
+        field.set(object, value);
     }
 
     /**

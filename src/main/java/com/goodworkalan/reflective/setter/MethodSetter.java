@@ -1,12 +1,10 @@
 package com.goodworkalan.reflective.setter;
 
 import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-
-import com.goodworkalan.reflective.Reflective;
-import com.goodworkalan.reflective.ReflectiveException;
 
 /**
  * Sets an object property using a single object void method.
@@ -42,13 +40,15 @@ public class MethodSetter implements Setter {
      *            The object.
      * @param value
      *            The property value.
+     * @throws InvocationTargetException
+     *             If the setter throws an exception.
+     * @throws IllegalAccessException
+     *             If the class or method is not visible.
+     * @exception IllegalArgumentException
+     *                If the value cannot be assigned to the field.
      */
-    public void set(final Object object, final Object value) throws ReflectiveException {
-        try {
-            method.invoke(object, value);
-        } catch (Throwable e) {
-            throw new ReflectiveException(Reflective.encode(e), e);
-        }
+    public void set(final Object object, final Object value) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+        method.invoke(object, value);
     }
 
     /**

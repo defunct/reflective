@@ -1,10 +1,9 @@
 package com.goodworkalan.reflective.setter;
 
 import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
-
-import com.goodworkalan.reflective.ReflectiveException;
 
 /**
  * Set a public property in an object instance. This interface makes property
@@ -21,10 +20,14 @@ public interface Setter {
      *            The object.
      * @param value
      *            The value.
-     * @throws ReflectiveException
-     *             If an exception occurs during reflection.
+     * @throws InvocationTargetException
+     *             If the setter throws an exception.
+     * @throws IllegalAccessException
+     *             If the class or method is not visible.
+     * @exception IllegalArgumentException
+     *                If the value cannot be assigned to the field.
      */
-    public void set(Object object, Object value) throws ReflectiveException;
+    public void set(Object object, Object value) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException;
 
     /**
      * Get the property name.
