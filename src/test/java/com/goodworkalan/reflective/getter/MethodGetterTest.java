@@ -6,10 +6,9 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
 
 import org.testng.annotations.Test;
-
-import com.goodworkalan.reflective.ReflectiveException;
 
 /**
  * Unit tests for the {@link MethodGetter} class.
@@ -19,7 +18,7 @@ import com.goodworkalan.reflective.ReflectiveException;
 public class MethodGetterTest {
     /** Test everything about the method getter. */
     @Test
-    public void everything() throws IntrospectionException, ReflectiveException {
+    public void everything() throws IntrospectionException, IllegalAccessException, InvocationTargetException {
         Widget widget = new Widget();
         widget.one = "One";
         widget.setTwo("Two");

@@ -1,12 +1,10 @@
 package com.goodworkalan.reflective.getter;
 
 import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-
-import com.goodworkalan.reflective.Reflective;
-import com.goodworkalan.reflective.ReflectiveException;
 
 /**
  * A proeprty getter that reads a getter method.
@@ -43,12 +41,8 @@ public class MethodGetter implements Getter {
      * @throws ReflectiveException
      *             If an exception occurs during reflection.
      */
-    public Object get(final Object object) throws ReflectiveException {
-        try {
-            return method.invoke(object);
-        } catch (Throwable e) {
-            throw new ReflectiveException(Reflective.encode(e), e);
-        }
+    public Object get(final Object object) throws IllegalAccessException, InvocationTargetException {
+        return method.invoke(object);
     }
 
     /**

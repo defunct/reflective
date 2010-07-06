@@ -1,10 +1,9 @@
 package com.goodworkalan.reflective.getter;
 
 import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
-
-import com.goodworkalan.reflective.ReflectiveException;
 
 /**
  * Get a public property from and object instance. This interface makes property
@@ -23,7 +22,7 @@ public interface Getter {
      * @throws ReflectiveException
      *             If an exception occurs during reflection.
      */
-    public Object get(Object object) throws ReflectiveException;
+    public Object get(Object object) throws IllegalAccessException, InvocationTargetException;
 
     /**
      * Get the property name.

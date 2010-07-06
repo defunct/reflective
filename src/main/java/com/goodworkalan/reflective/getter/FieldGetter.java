@@ -5,9 +5,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Type;
 
-import com.goodworkalan.reflective.Reflective;
-import com.goodworkalan.reflective.ReflectiveException;
-
 /**
  * A getter that reads a field value.
  *
@@ -36,12 +33,8 @@ public class FieldGetter implements Getter {
      * @throws ReflectiveException
      *             If an exception is thrown during reflection.
      */
-    public Object get(final Object object) throws ReflectiveException {
-        try {
-            return field.get(object);
-        } catch (Throwable e) {
-            throw new ReflectiveException(Reflective.encode(e), e);
-        }
+    public Object get(final Object object) throws IllegalAccessException {
+        return field.get(object);
     }
 
     /**

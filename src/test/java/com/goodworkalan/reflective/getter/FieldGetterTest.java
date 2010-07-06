@@ -3,10 +3,9 @@ package com.goodworkalan.reflective.getter;
 import static org.testng.Assert.assertEquals;
 
 import java.beans.IntrospectionException;
+import java.lang.reflect.InvocationTargetException;
 
 import org.testng.annotations.Test;
-
-import com.goodworkalan.reflective.ReflectiveException;
 
 /**
  * Unit tests for the {@link FieldGetter} class.
@@ -16,7 +15,7 @@ import com.goodworkalan.reflective.ReflectiveException;
 public class FieldGetterTest {
     /** Test everything about the field getter. */
     @Test
-    public void everything() throws IntrospectionException, ReflectiveException, SecurityException, NoSuchFieldException {
+    public void everything() throws IntrospectionException, IllegalAccessException, InvocationTargetException, SecurityException, NoSuchFieldException {
         Widget widget = new Widget();
         widget.one = "One";
         widget.setTwo("Two");

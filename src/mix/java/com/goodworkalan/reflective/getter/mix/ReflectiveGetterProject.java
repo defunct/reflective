@@ -19,9 +19,8 @@ public class ReflectiveGetterProject implements ProjectModule {
     public void build(Builder builder) {
         builder
             .cookbook(JavaProject.class)
-                .produces("com.github.bigeasy.reflective/reflective-getter/0.5")
+                .produces("com.github.bigeasy.reflective/reflective-getter/0.5.0.1")
                 .depends()
-                    .production("com.github.bigeasy.reflective/reflective-exception/0.+5")
                     .development("org.testng/testng-jdk15/5.10")
                     .end()
                 .end()
