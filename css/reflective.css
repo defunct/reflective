@@ -493,8 +493,9 @@ body {
   margin-right: 10px;
   width: 870px;
   margin-right: 40px;
-  text-align: right;
+  font-style: italic;
   margin-bottom: 1.5em;
+  text-align: right;
 }
 #banner-credit a { color: #efefef; }
 #content {
