@@ -2,8 +2,6 @@
 
 @import 'blueprint/screen.css';
 
-.showgrid {background:url(blueprint/src/grid.png);}
-
 @background: #71b5d8;
 @foreground: #2388cd;
 
@@ -62,16 +60,17 @@ body {
     .border-top-left-radius(12px);
 
     background: @foreground;
-    margin-top: 2em;
+    margin-top: 3em;
     text-align: left;
 
-    div {
+    h1 {
         .span(22); .left(2);
 
         color: #c1c1c1;
-        font-size: 3em;
-        margin-top: 0.5em;
         font-family: "Lucida Grande", Trebuchet, Arial, sans-serif;
+        font-size: 3em;
+        margin-bottom: 0.5em;
+        margin-top: 1em;
     }
 }
 
@@ -82,9 +81,24 @@ body {
     background: url(../images/Lete-a-Paris.jpg);
 }
 
-#article {
+#banner-credit {
+    .left(1); .span(22); .right(1);
+
+    text-align: right;
+    a {
+        color: #efefef;
+    }
+    margin-bottom: 1.5em;
+}
+
+#content {
     .span(24); .last;
 
+    color: #efefef;
     background: @foreground;
     text-align: left;
+}
+
+#article {
+    .left(7); .span(16); .right(1);
 }

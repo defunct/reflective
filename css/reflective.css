@@ -447,7 +447,6 @@ hr.space {
 }
 .clearfix, .container { display: block; }
 .clear { clear: both; }
-.showgrid { background: url(blueprint/src/grid.png); }
 body {
   text-align: center;
   background: #71b5d8;
@@ -465,18 +464,19 @@ body {
   -webkit-border-top-left-radius: 12px;
   border-top-left-radius: 12px;
   background: #2388cd;
-  margin-top: 2em;
+  margin-top: 3em;
   text-align: left;
 }
-#title div {
+#title h1 {
   float: left;
   margin-right: 10px;
   width: 870px;
   margin-left: 80px;
   color: #c1c1c1;
-  font-size: 3em;
-  margin-top: 0.5em;
   font-family: "Lucida Grande", Trebuchet, Arial, sans-serif;
+  font-size: 3em;
+  margin-bottom: 0.5em;
+  margin-top: 1em;
 }
 #banner {
   float: left;
@@ -487,12 +487,30 @@ body {
   height: 450px;
   background: url(../images/Lete-a-Paris.jpg);
 }
-#article {
+#banner-credit {
+  margin-left: 40px;
+  float: left;
+  margin-right: 10px;
+  width: 870px;
+  margin-right: 40px;
+  text-align: right;
+  margin-bottom: 1.5em;
+}
+#banner-credit a { color: #efefef; }
+#content {
   float: left;
   margin-right: 10px;
   width: 950px;
   margin-right: 0;
   padding-right: 0;
+  color: #efefef;
   background: #2388cd;
   text-align: left;
+}
+#article {
+  margin-left: 280px;
+  float: left;
+  margin-right: 10px;
+  width: 630px;
+  margin-right: 40px;
 }
